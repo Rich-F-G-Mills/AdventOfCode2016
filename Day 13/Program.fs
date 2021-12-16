@@ -11,9 +11,6 @@ type CellType =
     | OpenSpace of MinDistance: int option
 
         
-let determineCell' x y =
-    BitVector32 (x * x + 3 * x + 2 * x * y + y + y * y + PuzzleInput)
-
 let determineCell x y =
     let binRep =
         BitVector32 (x * x + 3 * x + 2 * x * y + y + y * y + PuzzleInput)
