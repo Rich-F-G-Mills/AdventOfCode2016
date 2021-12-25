@@ -21,7 +21,10 @@ let determineCell x y =
         | sum when sum % 2 = 0 -> OpenSpace None
         | _ -> Wall
 
-
+// Calculate the minimum distance to each cell on the grid.
+// This is done using a breadth first method.
+// Once a minimum distance has been determined for a cell, it
+// cannot be improved upon.
 let calculateMinDistances grid =
     let width, height =
         Array2D.length1 grid, Array2D.length2 grid
@@ -39,32 +42,24 @@ let calculateMinDistances grid =
             for x = 0 to (width-1) do
                 grid.[x, y] <-
                     match grid.[x, y] with
-                    | OpenSpace minDistance as openSpace ->
-                        let newMinDistance =
-                            surroundingOffsets
-                            |> Array.map (fun (dx, dy) -> (x + dx, y + dy))
-                            |> Array.filter (fun (x', y') -> (x' >= 0) && (x' < width) && (y' >= 0) && (y' < height))
-                            |> Array.choose (fun (x', y') ->
-                                match grid.[x', y'] with
-                                | OpenSpace (Some _ as minD) -> minD
-                                | _ -> None)
-                            |> function
-                                | [||] -> None
-                                | distances ->
-                                    distances
-                                    |> Array.min
-                                    |> (+) 1
-                                    |> Some
+                    | OpenSpace None as openSpace ->
+                        surroundingOffsets
+                        |> Array.map (fun (dx, dy) -> (x + dx, y + dy))
+                        |> Array.filter (fun (x', y') -> (x' >= 0) && (x' < width) && (y' >= 0) && (y' < height))
+                        |> Array.choose (fun (x', y') ->
+                            match grid.[x', y'] with
+                            | OpenSpace (Some _ as minD) -> minD
+                            | _ -> None)
+                        |> function
+                            | [||] -> openSpace
+                            | distances ->
+                                distances
+                                |> Array.min
+                                |> (+) 1
+                                |> Some
+                                |> OpenSpace
 
-                        match minDistance, newMinDistance with
-                        | Some minDistance', Some newMinDistance' when minDistance' >= newMinDistance' ->
-                            OpenSpace newMinDistance
-                        | None, Some _ ->
-                            OpenSpace newMinDistance
-                        | _ ->
-                            openSpace
-
-                    | wall -> wall
+                    | otherwise -> otherwise
 
         (prevGrid |> Seq.cast)
         |> Seq.zip (grid |> Seq.cast)
