@@ -49,6 +49,7 @@ let updateStateForInstruction state (Instruction (dirChange, distance)) =
 
 [<EntryPoint>]
 let main _ =
+
     let instructions =
         File.ReadAllText "Inputs.txt"
         |> String.splitString [|","|] StringSplitOptions.TrimEntries

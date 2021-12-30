@@ -15,6 +15,7 @@ type Target =
         | Output idx -> $"output #{idx}"
         | Bot idx -> $"bot #{idx}"
 
+
 [<DebuggerDisplay("{ToString()}")>]
 type Instruction =
     | BotGives of BotIdx: int * LowTarget: Target * HighTarget: Target
