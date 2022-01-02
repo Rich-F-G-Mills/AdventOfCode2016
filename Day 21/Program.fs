@@ -128,12 +128,13 @@ let processInverseOfInstruction (chars: char []) =
             chars |> Array.findIndex ((=) letter)
 
         let origIdx =
-            Seq.init chars.Length (fun idx ->
-                1 + idx + if idx >= 4 then 1 else 0)
+            seq { 0..(chars.Length) }
             // Which of these give the current letter location?...
-            |> Seq.filter ((=) letterIdx)
+            |> Seq.filter (fun idx -> letterIdx = 1 + idx + if idx >= 4 then 1 else 0)
             // In some cases, two original locations may map to the current location.
             |> Seq.exactlyOne
+
+        printfn "LetterIdx = %i;   OrigIdx = %i" letterIdx origIdx
 
         processInstruction chars (RotateLeft <| letterIdx - origIdx)
 
@@ -158,8 +159,12 @@ let main _ =
 
     instructions
     |> Array.rev
-    |> Array.fold processInverseOfInstruction ("fbgdceah" |> Array.ofSeq)
+    |> Array.fold (fun (s: char []) t ->
+        printfn "Array = %s; Instr = %A" (String s) t
+        processInverseOfInstruction s t) ("fbgdceah" |> Array.ofSeq)
     |> String
     |> printfn "Part 2 answer = %s"
+
+    
 
     0
