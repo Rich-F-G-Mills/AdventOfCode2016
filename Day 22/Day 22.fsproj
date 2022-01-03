@@ -8,11 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="NodeGrid.xlsx" />
     <Content Include="Inputs.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="Program.fs" />
   </ItemGroup>
+
+  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="FSharpx.Extras" Version="3.0.0" />

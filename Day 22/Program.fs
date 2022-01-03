@@ -4,11 +4,13 @@ open System.IO
 open System.Text.RegularExpressions
 open FSharpx.Text
 
+[<ReferenceEquality>]
 type Node =
-    { Size: decimal
-      Used: decimal
-      Available: decimal
-      ``Used%``: decimal }
+    { X: int
+      Y: int
+      Size: int
+      Used: int
+      Available: int }
 
 
 let (|Match'|_|) =
@@ -19,12 +21,6 @@ let (|AsInt|_|) (str: string) =
     | true, d -> Some d
     | false, _ -> None
 
-let (|AsDec|_|) (str: string) =
-    match Decimal.TryParse str with
-    | true, d -> Some d
-    | false, _ -> None
-
-
 [<EntryPoint>]
 let main _ =
 
@@ -33,9 +29,13 @@ let main _ =
             File.ReadAllLines "Inputs.txt"
             |> Array.skip 2
             |> Array.map (function
-                | Match' @"^/dev/grid/node-x(\d+)-y(\d+)\s+(\d+)T\s+(\d+)T\s+(\d+)T\s+(\d+)%$"
-                    { GroupValues = [ AsInt x; AsInt y; AsDec size; AsDec used; AsDec avail; AsDec usedPc ] } ->
-                        (x, y), { Size = size; Used = used; Available = avail; ``Used%`` = usedPc }
+                | Match' @"^/dev/grid/node-x(\d+)-y(\d+)\s+(\d+)T\s+(\d+)T\s+(\d+)T\s+\d+%$"
+                    { GroupValues = [ AsInt x; AsInt y; AsInt size; AsInt used; AsInt avail ] } ->
+                        let newNode =
+                            { X = x; Y = y; Size = size; Used = used; Available = avail }
+
+                        (x, y), newNode
+
                 | line -> failwith $"Unable to parse '{line}'.")
 
         let gridWidth, gridHeight =
@@ -50,6 +50,26 @@ let main _ =
             nodeData |> Map.ofArray
 
         Array2D.init gridWidth gridHeight (fun x y ->
-            nodeDataMap.[(x, y)])
-            
+            nodeDataMap.[x, y])
+
+    let nodesFlattened =
+        nodes
+        |> Seq.cast<Node>
+        |> Seq.toArray        
+
+    nodesFlattened
+    |> Seq.allPairs nodesFlattened
+    // Cannot pair up the same nodes.
+    |> Seq.filter ((<||) (<>))
+    // The first node is not empty and its usage fits within the second's availability.
+    |> Seq.filter (fun ({ Used = used }, { Available = avail }) ->
+        used > 0 && used <= avail)
+    |> Seq.length
+    |> printfn "Part 1 answer = %i\n"
+
+    nodesFlattened
+    |> Array.map (fun { X = x; Y = y; Size = size; Used = used; Available = avail } ->
+        sprintf "%i,%i,%i,%i,%i" x y size used avail)
+    |> fun data -> File.WriteAllLines("Nodes.txt", data)
+
     0
