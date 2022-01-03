@@ -15,7 +15,6 @@ type Instruction =
     | RotateRight of Steps: int
 
 
-
 let (|Match'|_|) =
     Regex.(|Match|_|) RegexOptions.None
 
@@ -128,15 +127,14 @@ let processInverseOfInstruction (chars: char []) =
             chars |> Array.findIndex ((=) letter)
 
         let origIdx =
-            seq { 0..(chars.Length) }
+            seq { 0..(chars.Length-1) }
             // Which of these give the current letter location?...
-            |> Seq.filter (fun idx -> letterIdx = 1 + idx + if idx >= 4 then 1 else 0)
+            |> Seq.filter (fun idx ->
+                letterIdx = (1 + 2 * idx + if idx >= 4 then 1 else 0) % chars.Length)
             // In some cases, two original locations may map to the current location.
             |> Seq.exactlyOne
 
-        printfn "LetterIdx = %i;   OrigIdx = %i" letterIdx origIdx
-
-        processInstruction chars (RotateLeft <| letterIdx - origIdx)
+        processInstruction chars (RotateLeft (letterIdx - origIdx))
 
     | RotateLeft steps ->
         processInstruction chars (RotateRight steps)
@@ -159,12 +157,8 @@ let main _ =
 
     instructions
     |> Array.rev
-    |> Array.fold (fun (s: char []) t ->
-        printfn "Array = %s; Instr = %A" (String s) t
-        processInverseOfInstruction s t) ("fbgdceah" |> Array.ofSeq)
+    |> Array.fold processInverseOfInstruction ("fbgdceah" |> Array.ofSeq)
     |> String
-    |> printfn "Part 2 answer = %s"
-
-    
+    |> printfn "Part 2 answer = %s"    
 
     0
