@@ -45,7 +45,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Day 21", "Day 21\Day 21.fsp
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Day 22", "Day 22\Day 22.fsproj", "{8E8AE5D3-4681-4E08-B90B-5CD698DB02C8}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Day 23", "Day 23\Day 23.fsproj", "{F2523B75-4049-4596-920B-A2EA74FA4C2D}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Day 23", "Day 23\Day 23.fsproj", "{F2523B75-4049-4596-920B-A2EA74FA4C2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
