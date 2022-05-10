@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Play.fsx" />
     <Content Include="Inputs.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -14,5 +15,9 @@
   </ItemGroup>
 
   <ItemGroup />
+
+  <ItemGroup>
+    <PackageReference Include="FSharpx.Extras" Version="3.1.0" />
+  </ItemGroup>
 
 </Project>
