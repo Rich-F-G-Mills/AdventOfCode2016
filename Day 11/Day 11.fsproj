@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Play - Copy - Copy.fsx" />
+    <None Include="Play - Copy.fsx" />
     <None Include="Play.fsx" />
     <Content Include="Inputs.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
